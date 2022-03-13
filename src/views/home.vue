@@ -10,28 +10,42 @@
       <el-input class="input-wrapper" v-model="input" />
     </div>
     <div class="btn-box">
-      <el-button type="primary" class="btn">输入</el-button>
+      <el-button type="primary" class="btn" @click="handleJoin">输入</el-button>
       <el-button type="primary" class="btn">随机生成</el-button>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
-import { defineComponent, ref } from 'vue'
+import { ref } from 'vue' 
+import { ElMessage } from 'element-plus';
+import { getCurrentInstance } from 'vue-demi';
+import { useRouter } from 'vue-router'
+
 const input = ref('')
 
-defineComponent({
-  data() {
-    return {
-      input
-    }
+const router = useRouter()
+
+const { appContext } = getCurrentInstance() as { appContext: any };
+const socket = appContext.config.globalProperties.$socket;
+
+const handleJoin = () => {
+  if (!input.value) {
+    ElMessage('请输入聊天室号码')
   }
-})
+
+  sessionStorage.setItem('room_id', input.value);  
+
+  router.push({
+    path: '/room',
+    query: {
+      id: input.value
+    }
+  })
+}
 </script>
 
 <style>
 .body {
-  background: #2d2d2d;
-  width: 100%;
   height: 100%;
   color: #fff;
   padding: 0 200px;
@@ -74,4 +88,8 @@ defineComponent({
 }
 
 .input-wrapper .el-input__inner:focus { outline: none; box-shadow: none; } 
+
+.el-input__inner:hover {
+  box-shadow: none;
+}
 </style>

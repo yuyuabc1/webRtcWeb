@@ -10,5 +10,5 @@
 </template>
 
 <style>
-html, body, #app { height: 100%; overflow: auto; margin: 0; }
+html, body, #app { height: 100%; overflow: auto; margin: 0;   background: #2d2d2d; }
 </style>
