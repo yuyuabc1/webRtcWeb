@@ -1,12 +1,18 @@
+/* eslint-disable */
+
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
-const fs = require('fs')
-const path = require('path')
+// import fs from 'fs'
+// import path from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [vue()],
+  define: {
+    // 同 webpack.DefinePlugin
+    'process.env': process.env
+  },
   server: {
     open: true,
     host:"0.0.0.0",
