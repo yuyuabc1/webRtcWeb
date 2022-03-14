@@ -3,8 +3,8 @@
     <el-container>
       <el-container>
         <el-header>
-          <div class="setting" @click="handleSetting">
-            <el-icon :size="30">
+          <div class="setting">
+            <el-icon :size="30" @click="handleSetting" class="sett-ion">
               <setting />
             </el-icon>
           </div>
@@ -106,20 +106,21 @@ export default defineComponent({
     height: 100%;
   }
   .el-header, .el-footer {
-    background-color: #B3C0D1;
+    /* background-color: #B3C0D1; */
     color: #333;
     text-align: center;
+    position: relative;
   }
   
   .el-aside {
-    background-color: #D3DCE6;
+    background-color: rgb(27, 28, 31);
     color: #333;
     text-align: center;
     width: 400px;
   }
   
   .el-main {
-    background-color: #E9EEF3;
+    background-color: #1d1e22;
     color: #333;
     text-align: center;
   }
@@ -130,6 +131,11 @@ export default defineComponent({
 
   .setting {
     cursor: pointer;
+    color: #fff;
+    display: inline-block;
+    position: absolute;
+    bottom: 20%;
+    right: 20px;
   }
   
   .icon-setting {
