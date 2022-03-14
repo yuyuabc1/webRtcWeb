@@ -7,11 +7,11 @@
       请输入您想进入的聊天室号码
     </div>
     <div class="input-box">
-      <el-input class="input-wrapper" v-model.number="input" />
+      <el-input class="input-wrapper" v-model="input" />
     </div>
     <div class="btn-box">
       <el-button type="primary" class="btn" @click="handleJoin">输入</el-button>
-      <el-button type="primary" class="btn" @clik="handleGenerate">随机生成</el-button>
+      <el-button type="primary" class="btn" @click="handleGenerate">随机生成</el-button>
     </div>
   </div>
 </template>
@@ -21,7 +21,7 @@ import { ElMessage } from 'element-plus';
 import { getCurrentInstance } from 'vue-demi';
 import { useRouter } from 'vue-router'
 
-const input = ref(0);
+const input = ref('');
 
 const router = useRouter()
 
@@ -44,7 +44,7 @@ const handleJoin = () => {
 }
 
 const handleGenerate = () => {
-  const value = Math.floor(Math.random() * 1000 + 1);
+  const value = String(Math.floor(Math.random() * 1000 + 1));
   input.value = value;
 }
 </script>
