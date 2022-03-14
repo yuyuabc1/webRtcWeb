@@ -32,5 +32,5 @@ jobs:
           scp_source: dist
           scp_target: /web/WebRtcWeb/
           before_script: |
-            rm -rf /web/WebRtcWeb/assets
+            rm -rf /web/WebRtcWeb/dist
       - run: echo "🍏 This job's status is ${{ job.status }}."
