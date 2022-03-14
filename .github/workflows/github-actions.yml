@@ -21,10 +21,8 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - run: npm run build
-      - name: List files in the repository
-        run: |
-          ls ${{ github.workspace }} >
-          pwd
+      - run: ls ${{ github.workspace }} >
+      - run: pwd
       - name: SSH Server Deploy
         uses: kostya-ten/ssh-server-deploy@v4
         with:
