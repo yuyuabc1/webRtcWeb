@@ -22,7 +22,6 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: ls ${{ github.workspace }}
-      - run: pwd
       - name: SSH Server Deploy
         uses: kostya-ten/ssh-server-deploy@v4
         with:
@@ -30,6 +29,8 @@ jobs:
           port: ${{ secrets.DEPLOY_PORT }}
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.DEPLOY_PASSWORD }}
-          scp_source: ./
+          scp_source: dist
           scp_target: /web/WebRtcWeb/
+          before_script: |
+            rm -rf /web/WebRtcWeb/assets
       - run: echo "🍏 This job's status is ${{ job.status }}."
