@@ -1,6 +1,6 @@
 const CONFIG = {
   development: {
-    socket: 'http://localhost:3000',
+    socket: 'https://localhost:3000',
   },
   production: {
     socket: 'https://api.zhuchenliang.com'

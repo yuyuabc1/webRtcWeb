@@ -11,7 +11,7 @@ type env = 'development' | 'production';
 
 const ENV = process.env.NODE_ENV as env || 'development';
 
-const socket = io(CONFIG[ENV].socket);
+const socket = io(CONFIG[ENV].socket, { path: '/chat' });
 
 
 // 5. 创建并挂载根实例

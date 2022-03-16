@@ -1,3 +1,5 @@
+import { Stream } from "stream";
+
 const DEFAULTCONSTRANINTS = { audio: true, video: true };
 
 class MediaControl {
@@ -32,27 +34,38 @@ class MediaControl {
     return deviceList;
   }
 
-  public getUserMedia = (target: HTMLMediaElement | null, constraints: MediaStreamConstraints = DEFAULTCONSTRANINTS): Promise<MediaStream> | null => {
-    let stream = null;
+  public getUserMedia = async (target: HTMLMediaElement | null, constraints: MediaStreamConstraints = DEFAULTCONSTRANINTS): Promise<MediaStream | null>=> {
 
     try {
-      navigator.mediaDevices.getUserMedia(constraints)
-      .then(function(stream) {
-        if (target) target.srcObject = stream;
-        /* 使用这个stream stream */
-        return stream;
-      })
-      .catch(function(err) {
-        /* 处理error */
-        console.log('getUserMedia: error:', err);
-      });
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      
+      if (target) target.srcObject = stream;
+
+      return stream;
+      // .then((stream) => {
+      //   if (target) target.srcObject = stream;
+      //   /* 使用这个stream stream */
+      //   console.log('!!!!', stream)
+      //   localStream = stream; 
+      //   return stream;
+      // })
+      // .catch(function(err) {
+      //   /* 处理error */
+      //   console.log('getUserMedia: error:', err);
+      // });
       /* use the stream */
     } catch(err) {
       /* handle the error */
       console.log('getUserMedia: error:', err);
     }
 
-    return stream;
+    return null;
+  }
+
+  public closeLocalMedia = (stream: MediaStream | null) => {
+    if (stream) {
+      stream.getTracks().forEach((track) => track.stop());
+    }
   }
 }
 

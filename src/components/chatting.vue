@@ -45,14 +45,16 @@ const props = defineProps({
     type: Array as () => Record[],
     default: [],
   },
-  userName: String
+  userName: String,
+  roomId: {
+    type: String,
+    default: ''
+  }
 })
 
 onRenderTriggered(({ key, target, type }) => {
   if (type === 'add') {
-    console.log(recordRef.value);
     const srcollHeight = recordRef.value.scrollHeight;
-    console.log(srcollHeight);
     recordRef.value.scrollTop = srcollHeight;
   }
 })
@@ -61,7 +63,7 @@ const handleSubmit = () => {
   socket.emit('message', {
     type: 1,
     user: props.userName,
-    room_id: route.query.id || sessionStorage.getItem('room_id'),
+    room_id: props.roomId,
     time: new Date().getTime(),
     content: textarea.value
   })
