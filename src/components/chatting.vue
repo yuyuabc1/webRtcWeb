@@ -27,13 +27,16 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, getCurrentInstance, onMounted, onRenderTriggered } from 'vue-demi';
+import { ref, getCurrentInstance, onRenderTriggered, nextTick, watch } from 'vue-demi';
 import { Record } from '../types';
 import { useRoute } from 'vue-router';
 
 const textarea = ref('');
 
-const recordRef = ref();
+const recordRef = ref({
+  scrollHeight: 0,
+  scrollTop: 0
+});
 
 const route = useRoute();
 
@@ -52,12 +55,18 @@ const props = defineProps({
   }
 })
 
-onRenderTriggered(({ key, target, type }) => {
-  if (type === 'add') {
-    const srcollHeight = recordRef.value.scrollHeight;
-    recordRef.value.scrollTop = srcollHeight;
-  }
-})
+watch(
+  () => props.list,
+  () => {
+    nextTick(() => {
+      const srcollHeight = recordRef.value.scrollHeight;
+      recordRef.value.scrollTop = srcollHeight;
+    })
+  },
+  { deep: true }
+)
+
+
 
 const handleSubmit = () => {
   socket.emit('message', {
