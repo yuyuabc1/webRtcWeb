@@ -14,7 +14,7 @@
       <el-aside class="aside-box">
         <div>
           <video ref="remoteUserVideoRef" autoplay class="remote-video"></video>
-          <!-- <video ref="userVideoRef" autoplay class="current-video"></video> -->
+          <video ref="userVideoRef" autoplay class="current-video"></video>
         </div>
         <div>
           <Chatting :list="chatRecord.list" :userName="userName" :roomId="roomId" />
@@ -31,7 +31,6 @@ import Chatting from '../components/chatting.vue';
 import mediaControl from '../utils/media';
 import { Msg, Record, Chat } from '../types';
 import { useRoute } from 'vue-router'
-import { pbkdf2Sync } from "crypto";
 
 
 interface SOURCE {
@@ -123,7 +122,15 @@ export default defineComponent({
           // 当pc接收到RTCPeerConnection上的track 获取到对方的remote stream
           source.pc.ontrack = function(event) {
             console.warn('ontrack', event);
-            if (remoteUserVideoRef.value) remoteUserVideoRef.value.srcObject = event.streams[0];
+            if (remoteUserVideoRef.value) {
+              if (event.streams && event.streams[0]) {
+                remoteUserVideoRef.value.srcObject = event.streams[0];
+              } else {
+                let inboundStream = new MediaStream();
+                remoteUserVideoRef.value.srcObject = inboundStream;
+                inboundStream.addTrack(event.track);
+              }
+            }
           }
 
           // 发送ICE候选到其他客户端	 
@@ -189,13 +196,14 @@ export default defineComponent({
 
       interface RTCIceCandidate {
         candidate: string,
+        sdpMid: string,
         sdpMLineIndex: number | null | undefined
         type: string
       }
 
       socket.on('peerconnection', (
         roomId: string,
-        data: RTCSessionDescriptionInit | RTCIceCandidate
+        data: RTCSessionDescriptionInit | { type: string, candidate: RTCIceCandidate }
       ) => {
         console.log('receive client message:', roomId, data);
         if (data && source.pc) {
@@ -226,15 +234,13 @@ export default defineComponent({
               )
               break;
             case 'candidate':
-              console.log('candidate:');
-              // const candidate = new RTCIceCandidate({
-              //   sdpMLineIndex: data.sdpMLineIndex,
-              //   candidate: data.candidate
-              // })
-              const candidate = new RTCIceCandidate({
-                candidate: data.candidate
-              })
-              source.pc.addIceCandidate(candidate);
+              console.log('candidate:', data);
+              const { candidate } = data;
+              source.pc.addIceCandidate(new RTCIceCandidate({
+                sdpMLineIndex: candidate.sdpMLineIndex,
+                sdpMid: candidate.sdpMid,
+                candidate: candidate.candidate
+              }));
               break;
             default:
               console.error('the p2p message is error', data);
@@ -331,5 +337,21 @@ export default defineComponent({
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+  }
+
+  .remote-video{
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 400px;
+    height: 400px;
+  }
+
+  .current-video{
+    position: absolute;
+    top: 250px;
+    right: 0;
+    width: 150px;
+    height: 150px;
   }
 </style>
